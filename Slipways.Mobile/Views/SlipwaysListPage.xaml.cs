@@ -15,13 +15,5 @@ namespace Slipways.Mobile.Views
         {
             InitializeComponent();
         }
-
-        private void ContentPage_Appearing(
-            object sender,
-            System.EventArgs e)
-        {
-            if (BindingContext is SlipwaysListPageViewModel viewModel)
-                viewModel.LoadData().SafeFireAndForget(true);
-        }
     }
 }

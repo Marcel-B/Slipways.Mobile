@@ -1,21 +1,18 @@
-﻿using Slipways.Mobile.Data.Models;
+﻿using Slipways.Mobile.Contracts;
+using Slipways.Mobile.Data.Models;
 using Slipways.Mobile.Infrastructure;
 using SQLite;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace Slipways.Mobile.Data
 {
-    public class SlipwaysDatabase
+    public class SlipwaysDatabase : ISlipwaysDatabase
     {
-        static readonly Lazy<SQLiteAsyncConnection> lazyInitializer = new Lazy<SQLiteAsyncConnection>(() =>
-        {
-            return new SQLiteAsyncConnection(Constants.DatabasePath, Constants.Flags);
-        });
-
-        static SQLiteAsyncConnection Database => lazyInitializer.Value;
+        private readonly SQLiteAsyncConnection Database = new SQLiteAsyncConnection(Constants.DatabasePath, Constants.Flags);
         static bool initialized = false;
 
         public SlipwaysDatabase()
@@ -27,24 +24,37 @@ namespace Slipways.Mobile.Data
         {
             if (!initialized)
             {
-                if (!Database.TableMappings.Any(m => m.MappedType.Name == typeof(Water).Name))
+                var mappings = Database.TableMappings;
+                if (!mappings.Any(m => m.MappedType.Name == typeof(Water).Name))
                 {
                     await Database.CreateTablesAsync(CreateFlags.None, typeof(Water)).ConfigureAwait(false);
                 }
-                if (!Database.TableMappings.Any(m => m.MappedType.Name == typeof(Slipway).Name))
+                if (!mappings.Any(m => m.MappedType.Name == typeof(Slipway).Name))
                 {
                     await Database.CreateTableAsync<Slipway>().ConfigureAwait(false);
+                }
+                if (!mappings.Any(m => m.MappedType.Name == typeof(User).Name))
+                {
+                    var result = await Database.CreateTablesAsync(CreateFlags.None, typeof(User)).ConfigureAwait(false);
+                    var user = new User
+                    {
+                        Created = DateTime.Now.ToString(),
+                        Pk = Guid.NewGuid(),
+                        Name = "Hans"
+                    };
+                    await Database.InsertAsync(user);
                 }
                 initialized = true;
             }
         }
+
         public async Task<List<T>> GetRecordsAsync<T>() where T : IEntity, new()
             => await Database.Table<T>().ToListAsync();
 
-        public Task<List<Slipway>> GetItemsNotDoneAsync()
+        public async Task<List<T>> GetByQueryAsync<T>(string query) where T : IEntity, new()
         {
             // SQL queries are also possible
-            return Database.QueryAsync<Slipway>("SELECT * FROM [TodoItem] WHERE [Done] = 0");
+            return await Database.QueryAsync<T>(query);// "SELECT * FROM [TodoItem] WHERE [Done] = 0"
         }
 
         public async Task<T> GetRecordAsync<T>(

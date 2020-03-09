@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using SQLite;
 using System;
 
 namespace Slipways.Mobile.Data.Models
@@ -7,6 +8,7 @@ namespace Slipways.Mobile.Data.Models
     {
 
         [JsonIgnore]
+        [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
 
         [JsonProperty("Id")]

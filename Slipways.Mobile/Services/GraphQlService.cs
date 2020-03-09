@@ -1,30 +1,26 @@
-﻿using GraphQL.Client.Http;
-using Slipways.Mobile.Data.Models;
-using System.Collections.Generic;
+﻿using GraphQL.Client.Abstractions;
+using GraphQL.Client.Http;
+using Slipways.Mobile.Contracts;
 using System.Threading.Tasks;
 
 namespace Slipways.Mobile.Services
 {
-    public class GraphQlService
+    public class GraphQLService : IGraphQLService
     {
-        private GraphQLHttpClient _httpClient;
+        private IGraphQLClient _httpClient;
 
-        public GraphQlService(
-            GraphQLHttpClient httpClient = null)
+        public GraphQLService(
+            IGraphQLClient httpClient)
         {
-            _httpClient = httpClient ?? new GraphQLHttpClient("https://data.slipways.de/graphql");
+            _httpClient = httpClient;
         }
 
-        public async Task<IEnumerable<Slipway>> GetSlipwaysASync()
+        public async Task<T> FetchValuesAsync<T>(
+            string query)
         {
-            var query = "{ slipways { name id city water { id longname } } }";
-            var request = new GraphQLHttpRequest
-            {
-                Query = query
-            };
-
-            var response = await _httpClient.SendQueryAsync<SlipwaysResponse>(request);
-            return response.Data.Slipways;
+            var request = new GraphQLHttpRequest(query);
+            var response = await _httpClient.SendQueryAsync<T>(request);
+            return response.Data;
         }
     }
 }

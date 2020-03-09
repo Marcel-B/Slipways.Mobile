@@ -1,14 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
+﻿using Prism.Navigation;
 
 namespace Slipways.Mobile.ViewModels
 {
-    public class InfoPageViewModel : INotifyPropertyChanged
+    public class InfoPageViewModel : ViewModelBase
     {
-        public event PropertyChangedEventHandler PropertyChanged;
+        public InfoPageViewModel(
+            INavigationService navigationService)
+            :base(navigationService)
+        {
+            Title = "Info";
+        }
 
+        public override void OnNavigatedFrom(INavigationParameters parameters)
+        {
+        }
 
+        public override void OnNavigatedTo(INavigationParameters parameters)
+        {
+        }
     }
 }
