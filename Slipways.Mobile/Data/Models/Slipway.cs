@@ -25,6 +25,9 @@ namespace Slipways.Mobile.Data.Models
         public double Latitude { get; set; }
         public double Longitude { get; set; }
 
+        [JsonIgnore]
+        public Guid WaterPk { get; set; }
+
         [Ignore]
         public Water Water { get; set; }
 

@@ -46,10 +46,6 @@
     <AndroidSigningKeyStore>/Users/marcel/Downloads/deployment_cert.der</AndroidSigningKeyStore>
     <LangVersion>8.0</LangVersion>
     <AndroidPackageFormat>aab</AndroidPackageFormat>
-    <AotAssemblies>false</AotAssemblies>
-    <EnableLLVM>false</EnableLLVM>
-    <AndroidEnableProfiledAot>false</AndroidEnableProfiledAot>
-    <BundleAssemblies>false</BundleAssemblies>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Mono.Android" />

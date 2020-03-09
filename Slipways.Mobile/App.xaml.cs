@@ -49,7 +49,7 @@ namespace Slipways.Mobile
                 options.JsonSerializer = new NewtonsoftJsonSerializer();
             }));
 
-            containerRegistry.RegisterSingleton<IRepository, Repository>();
+            containerRegistry.RegisterInstance<IRepository>(new Repository());
             containerRegistry.Register<IGraphQLService, GraphQLService>();
 
             containerRegistry.RegisterForNavigation<NavigationPage>();

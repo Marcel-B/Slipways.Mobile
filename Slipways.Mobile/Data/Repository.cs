@@ -23,14 +23,16 @@ namespace Slipways.Mobile.Data
             if (!initialized)
             {
                 var mappings = Database.TableMappings;
+
                 if (!mappings.Any(m => m.MappedType.Name == typeof(Water).Name))
-                {
                     Database.CreateTable<Water>(CreateFlags.None);
-                }
+
                 if (!mappings.Any(m => m.MappedType.Name == typeof(Slipway).Name))
-                {
                     Database.CreateTable<Slipway>(CreateFlags.None);
-                }
+
+                if (!mappings.Any(m => m.MappedType.Name == typeof(Manufacturer).Name))
+                    Database.CreateTable<Manufacturer>(CreateFlags.None);
+
                 if (!mappings.Any(m => m.MappedType.Name == typeof(User).Name))
                 {
                     Database.CreateTable<User>(CreateFlags.None);

@@ -48,19 +48,12 @@ namespace Slipways.Mobile.ViewModels
         {
             if (Waters.Count == 0)
             {
-                System.Console.WriteLine("Waters contains no element");
                 var waters = await _dataStore.GetWatersAsync();
                 foreach (var water in waters)
                 {
                     Waters.Add(water);
                 }
-                //foreach (var s in slip)
-                //{
-                //    Waters.Add(s);
-                //}
             }
-            //var users = _db.GetAll<User>();
-            //Username = users.First().Name;
         }
     }
 }

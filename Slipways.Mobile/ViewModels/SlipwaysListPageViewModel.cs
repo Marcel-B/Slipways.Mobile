@@ -30,9 +30,11 @@ namespace Slipways.Mobile.ViewModels
             {
                 if (sender is Slipway slipway)
                 {
-                    var p = new NavigationParameters();
-                    p.Add("slipway", slipway);
-                    await NavigationService.NavigateAsync("SlipwayDetails", p);
+                    var navigationParameters = new NavigationParameters
+                    {
+                        { "slipway", slipway }
+                    };
+                    await NavigationService.NavigateAsync("SlipwayDetails", navigationParameters);
                 }
             });
             _dataStore = dataStore;
@@ -49,10 +51,10 @@ namespace Slipways.Mobile.ViewModels
             if (Slipways.Count == 0)
             {
                 System.Console.WriteLine("Slipways contains no element");
-                var slip = await _dataStore.GetSlipwaysAsync();
-                foreach (var s in slip)
+                var slipways = await _dataStore.GetSlipwaysAsync();
+                foreach (var slipway in slipways)
                 {
-                    Slipways.Add(s);
+                    Slipways.Add(slipway);
                 }
             }
         }
