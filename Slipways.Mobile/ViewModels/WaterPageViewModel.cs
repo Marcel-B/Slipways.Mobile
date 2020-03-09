@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Prism.Navigation;
@@ -19,8 +20,8 @@ namespace Slipways.Mobile.ViewModels
             set => SetProperty(ref _waters, value);
         }
 
-        private IGraphQLService _graphQLService;
-        private IRepository _db;
+        private readonly IDataStore _dataStore;
+
         private string _username;
         public string Username
         {
@@ -29,13 +30,12 @@ namespace Slipways.Mobile.ViewModels
         }
 
         public WaterPageViewModel(
-            IRepository db,
-            IGraphQLService graphQLService,
+            IDataStore dataStore,
             INavigationService navigationService) : base(navigationService)
         {
+            Waters = new ObservableCollection<Water>();
             Title = "Gewässer";
-            _graphQLService = graphQLService;
-            _db = db;
+            _dataStore = dataStore;
         }
 
         public override void OnNavigatedFrom(
@@ -46,24 +46,21 @@ namespace Slipways.Mobile.ViewModels
         public async override void OnNavigatedTo(
             INavigationParameters parameters)
         {
-            if (Waters == null)
-                Waters = new ObservableCollection<Water>();
-
-            if (Waters.Count > 0)
-                return;
-
-            var result = await _graphQLService.FetchValuesAsync<WatersResponse>(Queries.Waters);
-            foreach (var water in result.Waters)
+            if (Waters.Count == 0)
             {
-                var w = new Water
+                System.Console.WriteLine("Waters contains no element");
+                var waters = await _dataStore.GetWatersAsync();
+                foreach (var water in waters)
                 {
-                    Longname = water.Longname,
-                    Shortname = water.Shortname
-                };
-                Waters.Add(w);
+                    Waters.Add(water);
+                }
+                //foreach (var s in slip)
+                //{
+                //    Waters.Add(s);
+                //}
             }
-            var users = _db.GetAll<User>();
-            Username = users.First().Name;
+            //var users = _db.GetAll<User>();
+            //Username = users.First().Name;
         }
     }
 }

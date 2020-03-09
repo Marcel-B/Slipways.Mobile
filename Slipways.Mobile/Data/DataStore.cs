@@ -13,6 +13,7 @@ namespace Slipways.Mobile.Data
         private IRepository _slipwaysDatabase;
 
         public IList<Slipway> Slipways { get; set; }
+        public IList<Water> Waters { get; set; }
 
         public DataStore(
             IGraphQLService graphQLService,
@@ -20,6 +21,21 @@ namespace Slipways.Mobile.Data
         {
             _graphQLService = graphQLService;
             _slipwaysDatabase = slipwaysDatabase;
+        }
+
+        public async Task<IEnumerable<Water>> GetWatersAsync()
+        {
+            if (Waters != null)
+                return Waters;
+
+            Waters = new List<Water>();
+
+            var result = await _graphQLService.FetchValuesAsync<WatersResponse>(Queries.Waters);
+            foreach (var water in result.Waters)
+            {
+                Waters.Add(water);
+            }
+            return Waters;
         }
 
         public async Task<IEnumerable<Slipway>> GetSlipwaysAsync()

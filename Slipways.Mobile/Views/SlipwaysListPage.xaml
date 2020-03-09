@@ -38,7 +38,9 @@
                                     Grid.Column="0"
                                     FontSize="20"
                                     Text="{Binding Name}" />
-                                <Image Grid.Column="1" Source="star56.png" />
+                                <Image 
+                                    Grid.Column="1" 
+                                    Source="star56.png" />
                             </Grid>
 
                             <Grid>

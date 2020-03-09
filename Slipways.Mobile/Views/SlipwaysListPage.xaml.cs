@@ -1,9 +1,4 @@
-﻿
-using Slipways.Mobile.Infrastructure;
-using Slipways.Mobile.Services;
-using Slipways.Mobile.ViewModels;
-using System.Threading.Tasks;
-using Xamarin.Forms;
+﻿using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
 namespace Slipways.Mobile.Views

@@ -7,5 +7,6 @@ namespace Slipways.Mobile.Contracts
     public interface IDataStore
     {
         Task<IEnumerable<Slipway>> GetSlipwaysAsync();
+        Task<IEnumerable<Water>> GetWatersAsync();
     }
 }
