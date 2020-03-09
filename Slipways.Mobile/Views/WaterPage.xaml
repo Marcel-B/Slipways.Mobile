@@ -4,13 +4,11 @@
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     Title="{Binding Title}">
-
     <ListView ItemsSource="{Binding Waters}">
         <ListView.ItemTemplate>
             <DataTemplate>
-                <Label Text="{Binding Longname}"></Label>
+                <Label Text="{Binding Logname}" />
             </DataTemplate>
         </ListView.ItemTemplate>
     </ListView>
-
 </ContentPage>

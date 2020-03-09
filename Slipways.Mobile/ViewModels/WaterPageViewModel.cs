@@ -48,17 +48,19 @@ namespace Slipways.Mobile.ViewModels
         {
             if (Waters == null)
                 Waters = new ObservableCollection<Water>();
+
             if (Waters.Count > 0)
                 return;
 
             var result = await _graphQLService.FetchValuesAsync<WatersResponse>(Queries.Waters);
             foreach (var water in result.Waters)
             {
-                Waters.Add(new Water
+                var w = new Water
                 {
                     Longname = water.Longname,
                     Shortname = water.Shortname
-                });
+                };
+                Waters.Add(w);
             }
             var users = _db.GetAll<User>();
             Username = users.First().Name;
