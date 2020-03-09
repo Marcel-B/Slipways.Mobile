@@ -10,13 +10,13 @@ namespace Slipways.Mobile.Data
     public class DataStore : IDataStore
     {
         private IGraphQLService _graphQLService;
-        private ISlipwaysDatabase _slipwaysDatabase;
+        private IRepository _slipwaysDatabase;
 
         public IList<Slipway> Slipways { get; set; }
 
         public DataStore(
             IGraphQLService graphQLService,
-            ISlipwaysDatabase slipwaysDatabase)
+            IRepository slipwaysDatabase)
         {
             _graphQLService = graphQLService;
             _slipwaysDatabase = slipwaysDatabase;
@@ -33,10 +33,10 @@ namespace Slipways.Mobile.Data
             foreach (var slipway in response.Slipways)
             {
                 int waterId;
-                var water = await _slipwaysDatabase.GetByUuidAsync<Water>(slipway.Water.Pk);
+                var water = _slipwaysDatabase.GetByUuid<Water>(slipway.Water.Pk);
 
                 if (water == null)
-                    waterId = await _slipwaysDatabase.SaveRecordAsync(slipway.Water);
+                    waterId = _slipwaysDatabase.InsertOrUpdate(slipway.Water);
                 else
                     waterId = water.Id;
 
@@ -44,11 +44,11 @@ namespace Slipways.Mobile.Data
 
                 int slipwayId;
 
-                var slipwayDb = await _slipwaysDatabase.GetByUuidAsync<Slipway>(slipway.Pk);
+                var slipwayDb = _slipwaysDatabase.GetByUuid<Slipway>(slipway.Pk);
 
                 if (slipwayDb == null)
                 {
-                    slipwayId = await _slipwaysDatabase.SaveRecordAsync(slipway);
+                    slipwayId = _slipwaysDatabase.InsertOrUpdate(slipway);
                 }
                 else
                 {

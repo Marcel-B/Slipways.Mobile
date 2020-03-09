@@ -11,8 +11,6 @@ using Slipways.Mobile.Services;
 using GraphQL.Client.Abstractions;
 using GraphQL.Client.Http;
 using GraphQL.Client.Serializer.Newtonsoft;
-using Slipways.Mobile.Data.Models;
-using System.Linq;
 
 namespace Slipways.Mobile
 {
@@ -50,14 +48,21 @@ namespace Slipways.Mobile
                 options.EndPoint = new Uri("https://data.slipways.de/graphql");
                 options.JsonSerializer = new NewtonsoftJsonSerializer();
             }));
-            containerRegistry.RegisterSingleton<ISlipwaysDatabase, SlipwaysDatabase>();
+
+            containerRegistry.RegisterSingleton<IRepository, Repository>();
             containerRegistry.Register<IGraphQLService, GraphQLService>();
+
             containerRegistry.RegisterForNavigation<NavigationPage>();
             containerRegistry.RegisterForNavigation<MainPage, MainPageViewModel>();
             containerRegistry.RegisterForNavigation<WaterPage, WaterPageViewModel>();
             containerRegistry.RegisterForNavigation<SlipwaysListPage, SlipwaysListPageViewModel>();
             containerRegistry.RegisterForNavigation<InfoPage, InfoPageViewModel>();
             containerRegistry.RegisterForNavigation<SlipwayDetails, SlipwayDetailsViewModel>();
+            containerRegistry.RegisterForNavigation<MarinaPage, MarinaPageViewModel>();
+            containerRegistry.RegisterForNavigation<ServicePage, ServicePageViewModel>();
+            containerRegistry.RegisterForNavigation<LevelPage, LevelPageViewModel>();
+            containerRegistry.RegisterForNavigation<MapPage, MapPageViewModel>();
+
             containerRegistry.RegisterSingleton<IDataStore, DataStore>();
         }
     }

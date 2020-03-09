@@ -2,8 +2,15 @@
 <ContentPage
     x:Class="Slipways.Mobile.Views.WaterPage"
     xmlns="http://xamarin.com/schemas/2014/forms"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
-    <StackLayout>
-        <Label Text="{Binding Username}" />
-    </StackLayout>
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="{Binding Title}">
+
+    <ListView ItemsSource="{Binding Waters}">
+        <ListView.ItemTemplate>
+            <DataTemplate>
+                <Label Text="{Binding Longname}"></Label>
+            </DataTemplate>
+        </ListView.ItemTemplate>
+    </ListView>
+
 </ContentPage>

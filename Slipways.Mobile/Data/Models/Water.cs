@@ -15,5 +15,7 @@ namespace Slipways.Mobile.Data.Models
         public Guid Pk { get; set; }
 
         public string Longname { get; set; }
+
+        public string Shortname { get; set; }
     }
 }
