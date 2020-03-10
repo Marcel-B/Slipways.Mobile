@@ -10,11 +10,9 @@ namespace Slipways.Mobile.Contracts
         IEnumerable<Extra> Extras { get; }
         IEnumerable<Slipway> Slipways { get; }
         IEnumerable<Water> Waters { get; }
-        void LoadData();
+        IEnumerable<Marina> Marinas { get; }
+        IEnumerable<Service> Services { get; }
 
-        Task UpdateAsync();
-        Task<IEnumerable<Extra>> UpdateExtrasAsync();
-        Task<IEnumerable<Slipway>> GetSlipwaysAsync();
-        Task<IEnumerable<Water>> GetWatersAsync();
+        Task LoadData();
     }
 }

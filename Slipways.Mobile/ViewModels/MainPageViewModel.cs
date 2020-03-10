@@ -1,4 +1,5 @@
 ﻿using Prism.Navigation;
+using Slipways.Mobile.Contracts;
 using Slipways.Mobile.Helpers;
 using Slipways.Mobile.Views;
 using System.Windows.Input;
@@ -8,9 +9,11 @@ namespace Slipways.Mobile.ViewModels
 {
     public class MainPageViewModel : ViewModelBase
     {
+
         public ICommand Navigate { get; set; }
 
         public MainPageViewModel(
+            IDataStore dataStore,
             INavigationService navigationService) : base(navigationService)
         {
             Navigate = new Command(async (sender) =>

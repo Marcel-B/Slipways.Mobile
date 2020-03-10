@@ -1,4 +1,5 @@
 ﻿using System;
+using Slipways.Mobile.Contracts;
 using SQLite;
 
 namespace Slipways.Mobile.Data.Models
@@ -9,7 +10,8 @@ namespace Slipways.Mobile.Data.Models
         public int Id { get; set; }
         public Guid Pk { get; set; }
         public string Name { get; set; }
-        public string Created { get; set; }
+        public DateTime Created { get; set; }
+        public DateTime? Updated { get; set; }
         public string Version { get; set; }
     }
 }

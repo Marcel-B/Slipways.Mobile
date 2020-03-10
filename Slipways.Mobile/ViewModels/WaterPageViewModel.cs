@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Linq;
+using Prism.Events;
 using Prism.Navigation;
 using Slipways.Mobile.Contracts;
-using Slipways.Mobile.Data;
 using Slipways.Mobile.Data.Models;
-using Slipways.Mobile.Helpers;
+using Slipways.Mobile.Events;
 
 namespace Slipways.Mobile.ViewModels
 {
@@ -31,11 +29,24 @@ namespace Slipways.Mobile.ViewModels
 
         public WaterPageViewModel(
             IDataStore dataStore,
+            IEventAggregator eventAggregator,
             INavigationService navigationService) : base(navigationService)
         {
             Waters = new ObservableCollection<Water>();
             Title = "Gewässer";
             _dataStore = dataStore;
+            eventAggregator.GetEvent<UpdateReadyEvent>().Subscribe(Update, ThreadOption.UIThread);
+        }
+
+        public void Update(
+            string value)
+        {
+            if (value == "water")
+            {
+                Waters.Clear();
+                foreach (var water in _dataStore.Waters.OrderBy(_ => _.Longname))
+                    Waters.Add(water);
+            }
         }
 
         public override void OnNavigatedFrom(
@@ -43,17 +54,11 @@ namespace Slipways.Mobile.ViewModels
         {
         }
 
-        public async override void OnNavigatedTo(
+        public override void OnNavigatedTo(
             INavigationParameters parameters)
         {
             if (Waters.Count == 0)
-            {
-                var waters = await _dataStore.GetWatersAsync();
-                foreach (var water in waters)
-                {
-                    Waters.Add(water);
-                }
-            }
+                Update("water");
         }
     }
 }

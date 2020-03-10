@@ -1,5 +1,6 @@
 ﻿using System;
 using Newtonsoft.Json;
+using Slipways.Mobile.Contracts;
 using SQLite;
 
 namespace Slipways.Mobile.Data.Models

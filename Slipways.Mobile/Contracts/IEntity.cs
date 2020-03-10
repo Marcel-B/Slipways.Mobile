@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Slipways.Mobile.Data.Models
+namespace Slipways.Mobile.Contracts
 {
     public interface IEntity
     {

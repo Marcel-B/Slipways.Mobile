@@ -5,6 +5,6 @@ namespace Slipways.Mobile.Data
 {
     public class MarinasResponse
     {
-        public IEnumerable<Marina> Marinas { get; set; }
+        public IEnumerable<Marina> Ports { get; set; }
     }
 }

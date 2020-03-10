@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Slipways.Mobile.Contracts;
 using SQLite;
 using System;
 
@@ -33,9 +34,14 @@ namespace Slipways.Mobile.Data.Models
         [Ignore]
         public Water Water { get; set; }
 
+        [Ignore]
+        [JsonProperty("port")]
+        public Marina Marina { get; set; }
+
         [JsonIgnore]
         public int WaterId { get => Water.Id; }
 
         public string Watername => Water.Longname;
+        public Guid MarinaPk { get; set; }
     }
 }

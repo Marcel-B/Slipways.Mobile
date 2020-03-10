@@ -11,6 +11,8 @@ using Slipways.Mobile.Services;
 using GraphQL.Client.Abstractions;
 using GraphQL.Client.Http;
 using GraphQL.Client.Serializer.Newtonsoft;
+using Slipways.Mobile.Data.Repositories;
+using Prism.Events;
 
 namespace Slipways.Mobile
 {
@@ -39,20 +41,33 @@ namespace Slipways.Mobile
             InitializeComponent();
             await NavigationService.NavigateAsync("NavigationPage/MainPage");
             var store = Container.Resolve<IDataStore>();
-            store.LoadData();
+            await store.LoadData();
         }
 
         protected override void RegisterTypes(
             IContainerRegistry containerRegistry)
         {
+            Console.WriteLine("hello");
             containerRegistry.RegisterInstance<IGraphQLClient>(new GraphQLHttpClient((options) =>
             {
                 options.EndPoint = new Uri("https://data.slipways.de/graphql");
                 options.JsonSerializer = new NewtonsoftJsonSerializer();
             }));
 
-            containerRegistry.RegisterInstance<IRepository>(new Repository());
+            containerRegistry.RegisterInstance<IDataContext>(new DataContext());
+            containerRegistry.RegisterInstance<IEventAggregator>(new EventAggregator());
             containerRegistry.Register<IGraphQLService, GraphQLService>();
+            containerRegistry.Register<IManufacturerRepository, ManufacturerRepository>();
+            containerRegistry.Register<IServiceRepository, ServiceRepository>();
+            containerRegistry.Register<IMarinaRepository, MarinaRepository>();
+            containerRegistry.Register<ISlipwayRepository, SlipwayRepository>();
+            containerRegistry.Register<IWaterRepository, WaterRepository>();
+            containerRegistry.Register<IStationRepository, StationRepository>();
+            containerRegistry.Register<IExtraRepository, ExtraRepository>();
+            containerRegistry.Register<IUpdateService, UpdateService>();
+
+            containerRegistry.RegisterSingleton<IRepositoryWrapper, RepositoryWrapper>();
+            containerRegistry.RegisterSingleton<IDataStore, DataStore>();
 
             containerRegistry.RegisterForNavigation<NavigationPage>();
             containerRegistry.RegisterForNavigation<MainPage, MainPageViewModel>();
@@ -65,7 +80,7 @@ namespace Slipways.Mobile
             containerRegistry.RegisterForNavigation<LevelPage, LevelPageViewModel>();
             containerRegistry.RegisterForNavigation<MapPage, MapPageViewModel>();
 
-            containerRegistry.RegisterSingleton<IDataStore, DataStore>();
+            Console.WriteLine("hallo");
         }
     }
 }
