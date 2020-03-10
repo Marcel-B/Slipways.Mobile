@@ -45,14 +45,13 @@ namespace Slipways.Mobile.ViewModels
         {
         }
 
-        public async override void OnNavigatedTo(
+        public override void OnNavigatedTo(
             INavigationParameters parameters)
         {
             if (Slipways.Count == 0)
             {
                 System.Console.WriteLine("Slipways contains no element");
-                var slipways = await _dataStore.GetSlipwaysAsync();
-                foreach (var slipway in slipways)
+                foreach (var slipway in _dataStore.Slipways)
                 {
                     Slipways.Add(slipway);
                 }

@@ -12,10 +12,13 @@ namespace Slipways.Mobile.Data.Models
         public int Id { get; set; }
 
         [JsonProperty("Id")]
+        [Indexed]
         public Guid Pk { get; set; }
 
         public string Longname { get; set; }
 
         public string Shortname { get; set; }
+
+        public DateTime? Updated { get; set; }
     }
 }

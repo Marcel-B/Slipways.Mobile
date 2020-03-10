@@ -4,7 +4,7 @@ using SQLite;
 
 namespace Slipways.Mobile.Data.Models
 {
-    public class Manufacturer : IEntity
+    public class Extra : IEntity
     {
         [JsonIgnore]
         [PrimaryKey, AutoIncrement]

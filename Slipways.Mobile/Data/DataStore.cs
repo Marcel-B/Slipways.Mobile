@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using ImTools;
 using Slipways.Mobile.Contracts;
 using Slipways.Mobile.Data.Models;
 using Slipways.Mobile.Helpers;
@@ -13,8 +15,10 @@ namespace Slipways.Mobile.Data
         private IGraphQLService _graphQLService;
         private IRepository _repository;
 
-        public IList<Slipway> Slipways { get; set; }
-        public IList<Water> Waters { get; set; }
+        public IEnumerable<Water> Waters { get; private set; }
+        public IEnumerable<Slipway> Slipways { get; private set; }
+        public IEnumerable<Manufacturer> Manufacturers { get; private set; }
+        public IEnumerable<Extra> Extras { get; private set; }
 
         public DataStore(
             IGraphQLService graphQLService,
@@ -32,10 +36,7 @@ namespace Slipways.Mobile.Data
             Waters = new List<Water>();
 
             var result = await _graphQLService.FetchValuesAsync<WatersResponse>(Queries.Waters);
-            foreach (var water in result.Waters)
-            {
-                Waters.Add(water);
-            }
+            Waters = result.Waters;
             return Waters;
         }
 
@@ -47,7 +48,18 @@ namespace Slipways.Mobile.Data
 
             foreach (var water in waters)
             {
-                _repository.InsertOrUpdate(water);
+                var tmp = _repository.GetByUuid<Water>(water.Pk);
+
+                // Insert new Waters
+                if (tmp == null)
+                    _repository.Insert(water);
+
+                // Insert Updated Waters
+                else if (tmp.Updated != water.Updated)
+                {
+                    water.Id = tmp.Id;
+                    _repository.Update(tmp.Id, water);
+                }
             }
         }
 
@@ -58,23 +70,80 @@ namespace Slipways.Mobile.Data
 
             foreach (var slipway in slipways)
             {
-                var slip = _repository.GetByUuid<Slipway>(slipway.Pk);
+                var tmp = _repository.GetByUuid<Slipway>(slipway.Pk);
 
-                if (slip != null)
-                    slipway.Id = slip.Id;
-
-                slipway.WaterPk = slipway.Water.Pk;
-                _repository.InsertOrUpdate(slipway);
+                if (tmp == null)
+                {
+                    slipway.WaterPk = slipway.Water.Pk;
+                    _repository.Insert(slipway);
+                }
+                else if (slipway.Updated != tmp.Updated)
+                {
+                    slipway.Id = tmp.Id;
+                    slipway.WaterPk = slipway.Water.Pk;
+                    _repository.Update(tmp.Id, slipway);
+                }
             }
         }
 
-        public async Task UpdateManufacturersAsync()
+        public async Task<IEnumerable<Manufacturer>> UpdateManufacturersAsync()
         {
             var manufacturersResponse = await _graphQLService.FetchValuesAsync<ManufacturersResponse>(Queries.Manufacturers);
             var manufacturers = manufacturersResponse.Manufacturers;
 
             foreach (var manufacturer in manufacturers)
-                _repository.InsertOrUpdate(manufacturer);
+            {
+                var tmp = _repository.GetByUuid<Manufacturer>(manufacturer.Pk);
+                if (tmp == null)
+                    _repository.Insert(manufacturer);
+
+                else if (manufacturer.Updated != tmp.Updated)
+                {
+                    manufacturer.Id = tmp.Id;
+                    _repository.Update(tmp.Id, manufacturer);
+                }
+            }
+            return _repository.GetAll<Manufacturer>();
+        }
+
+
+        public async Task<IEnumerable<Extra>> UpdateExtrasAsync()
+        {
+            var extraResponse = await _graphQLService.FetchValuesAsync<ExtrasResponse>(Queries.Extras);
+            var extras = extraResponse.Extras;
+
+            foreach (var extra in extras)
+            {
+                var tmp = _repository.GetByUuid<Extra>(extra.Pk);
+                if (tmp == null)
+                    _repository.Insert(extra);
+
+                else if (extra.Updated != tmp.Updated)
+                {
+                    extra.Id = tmp.Id;
+                    _repository.Update(tmp.Id, extra);
+                }
+            }
+            return _repository.GetAll<Extra>();
+        }
+
+        public async Task UpdateAsync()
+        {
+            await UpdateExtrasAsync();
+            await UpdateManufacturersAsync();
+        }
+
+        public void LoadData()
+        {
+            Manufacturers = _repository.GetAll<Manufacturer>();
+            Extras = _repository.GetAll<Extra>();
+            Waters = _repository.GetAll<Water>();
+            var slipways = _repository.GetAll<Slipway>();
+
+            foreach (var slipway in slipways)
+                slipway.Water = Waters.First(_ => _.Pk == slipway.WaterPk);
+
+            Slipways = slipways;
         }
 
         public async Task<IEnumerable<Slipway>> GetSlipwaysAsync()
@@ -82,7 +151,6 @@ namespace Slipways.Mobile.Data
             if (Slipways != null)
                 return Slipways;
 
-            await UpdateManufacturersAsync();
             await UpdateWatersAsync();
             await UpdateSlipwaysAsync();
 
@@ -107,7 +175,7 @@ namespace Slipways.Mobile.Data
                 var water = _repository.GetByUuid<Water>(slipway.Water.Pk);
 
                 if (water == null)
-                    waterId = _repository.InsertOrUpdate(slipway.Water);
+                    waterId = _repository.Insert(slipway.Water);
                 else
                     waterId = water.Id;
 
@@ -120,14 +188,14 @@ namespace Slipways.Mobile.Data
 
                 if (slipwayDb == null)
                 {
-                    slipwayId = _repository.InsertOrUpdate(slipway);
+                    slipwayId = _repository.Insert(slipway);
                 }
                 else
                 {
                     slipwayId = slipwayDb.Id;
                 }
 
-                Slipways.Add(slipway);
+                //Slipways.Add(slipway);
             }
             return Slipways;
         }

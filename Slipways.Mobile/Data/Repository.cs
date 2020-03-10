@@ -33,6 +33,9 @@ namespace Slipways.Mobile.Data
                 if (!mappings.Any(m => m.MappedType.Name == typeof(Manufacturer).Name))
                     Database.CreateTable<Manufacturer>(CreateFlags.None);
 
+                if (!mappings.Any(m => m.MappedType.Name == typeof(Extra).Name))
+                    Database.CreateTable<Extra>(CreateFlags.None);
+
                 if (!mappings.Any(m => m.MappedType.Name == typeof(User).Name))
                 {
                     Database.CreateTable<User>(CreateFlags.None);
@@ -68,9 +71,13 @@ namespace Slipways.Mobile.Data
             .Where(_ => _.Pk == uuid)
             .FirstOrDefault();
 
-        public int InsertOrUpdate<T>(
+        public int Insert<T>(
             T entity) where T : IEntity, new()
-            => entity.Id != 0 ? Database.Update(entity) : Database.Insert(entity);
+            => Database.Insert(entity);
+
+        public int Update<T>(
+            int id, T entity) where T : IEntity, new()
+            => Database.Update(entity);
 
         public int Delete<T>(
             T item) where T : IEntity, new()

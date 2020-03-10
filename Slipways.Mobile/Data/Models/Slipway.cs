@@ -13,6 +13,7 @@ namespace Slipways.Mobile.Data.Models
         public string Name { get; set; }
 
         [JsonProperty("id")]
+        [Indexed]
         public Guid Pk { get; set; }
 
         public string City { get; set; }
@@ -22,6 +23,7 @@ namespace Slipways.Mobile.Data.Models
         public string Postalcode { get; set; }
 
         public DateTime Created { get; set; }
+        public DateTime? Updated { get; set; }
         public double Latitude { get; set; }
         public double Longitude { get; set; }
 

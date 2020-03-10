@@ -38,6 +38,8 @@ namespace Slipways.Mobile
         {
             InitializeComponent();
             await NavigationService.NavigateAsync("NavigationPage/MainPage");
+            var store = Container.Resolve<IDataStore>();
+            store.LoadData();
         }
 
         protected override void RegisterTypes(

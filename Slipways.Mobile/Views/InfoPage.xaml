@@ -9,10 +9,14 @@
     mc:Ignorable="d">
     <ContentPage.Content>
         <StackLayout>
-            <Label
+            <StackLayout
                 HorizontalOptions="CenterAndExpand"
-                Text="Welcome to Xamarin.Forms!"
-                VerticalOptions="CenterAndExpand" />
+                Orientation="Horizontal"
+                VerticalOptions="CenterAndExpand">
+                <Label Text="Slipanlagen:" />
+                <Label Text="{Binding SlipwaysCount}" />
+            </StackLayout>
+
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
