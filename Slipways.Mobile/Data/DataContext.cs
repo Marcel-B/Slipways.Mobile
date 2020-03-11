@@ -11,7 +11,7 @@ namespace Slipways.Mobile.Data
     public class DataContext : IDataContext
     {
         public SQLiteConnection Context { get; private set; }
-        static bool initialized = false;
+        public static bool Initialized = false;
 
         public TableQuery<T> Table<T>() where T : IEntity, new() => Context.Table<T>();
         public List<T> Query<T>(string query) where T : IEntity, new() => Context.Query<T>(query);
@@ -22,12 +22,11 @@ namespace Slipways.Mobile.Data
         public DataContext()
         {
             Context = new SQLiteConnection(Constants.DatabasePath, Constants.Flags);
-            Initialize();
         }
 
-        private void Initialize()
+        public void Initialize()
         {
-            if (!initialized)
+            if (!Initialized)
             {
                 var mappings = Context.TableMappings;
 
@@ -65,7 +64,7 @@ namespace Slipways.Mobile.Data
                 {
 
                 }
-                initialized = true;
+                Initialized = true;
             }
         }
     }

@@ -11,5 +11,6 @@ namespace Slipways.Mobile.Contracts
         int Insert<T>(T entity) where T : IEntity, new();
         int Update<T>(T entity) where T : IEntity, new();
         int Delete<T>(T entity) where T : IEntity, new();
+        public void Initialize();
     }
 }

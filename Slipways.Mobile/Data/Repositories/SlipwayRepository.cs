@@ -14,7 +14,7 @@ namespace Slipways.Mobile.Data.Repositories
 
         public override List<Slipway> GetAll()
         {
-            if (Cache != null)
+            if (Cache != null && Cache.Count > 0)
                 return Cache;
 
             var slipways = base.GetAll();

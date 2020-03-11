@@ -20,8 +20,8 @@ namespace Slipways.Mobile
     {
         public App() : this(null)
         {
-
         }
+
         public App(IPlatformInitializer initializer) : base(initializer) { }
 
         protected override void OnStart()
@@ -40,21 +40,18 @@ namespace Slipways.Mobile
         {
             InitializeComponent();
             await NavigationService.NavigateAsync("NavigationPage/MainPage");
-            var store = Container.Resolve<IDataStore>();
-            await store.LoadData();
         }
 
         protected override void RegisterTypes(
             IContainerRegistry containerRegistry)
         {
-            Console.WriteLine("hello");
             containerRegistry.RegisterInstance<IGraphQLClient>(new GraphQLHttpClient((options) =>
             {
                 options.EndPoint = new Uri("https://data.slipways.de/graphql");
                 options.JsonSerializer = new NewtonsoftJsonSerializer();
             }));
 
-            containerRegistry.RegisterInstance<IDataContext>(new DataContext());
+            containerRegistry.RegisterSingleton<IDataContext, DataContext>();
             containerRegistry.RegisterInstance<IEventAggregator>(new EventAggregator());
             containerRegistry.Register<IGraphQLService, GraphQLService>();
             containerRegistry.Register<IManufacturerRepository, ManufacturerRepository>();
@@ -79,8 +76,6 @@ namespace Slipways.Mobile
             containerRegistry.RegisterForNavigation<ServicePage, ServicePageViewModel>();
             containerRegistry.RegisterForNavigation<LevelPage, LevelPageViewModel>();
             containerRegistry.RegisterForNavigation<MapPage, MapPageViewModel>();
-
-            Console.WriteLine("hallo");
         }
     }
 }

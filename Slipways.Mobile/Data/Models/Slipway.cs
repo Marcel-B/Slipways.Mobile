@@ -41,6 +41,9 @@ namespace Slipways.Mobile.Data.Models
         [JsonIgnore]
         public int WaterId { get => Water.Id; }
 
+        [JsonIgnore]
+        public bool IsFavorite { get; set; }
+
         public string Watername => Water.Longname;
         public Guid MarinaPk { get; set; }
     }

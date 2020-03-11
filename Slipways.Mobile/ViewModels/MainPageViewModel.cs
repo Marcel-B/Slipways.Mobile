@@ -1,7 +1,10 @@
-﻿using Prism.Navigation;
+﻿using Prism.Events;
+using Prism.Navigation;
 using Slipways.Mobile.Contracts;
+using Slipways.Mobile.Events;
 using Slipways.Mobile.Helpers;
 using Slipways.Mobile.Views;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
 
@@ -9,13 +12,24 @@ namespace Slipways.Mobile.ViewModels
 {
     public class MainPageViewModel : ViewModelBase
     {
+        private bool _running;
+        private IDataStore _dataStore;
+
+        public bool Running
+        {
+            get => _running;
+            set => SetProperty(ref _running, value);
+        }
 
         public ICommand Navigate { get; set; }
 
         public MainPageViewModel(
             IDataStore dataStore,
+            IEventAggregator eventAggregator,
             INavigationService navigationService) : base(navigationService)
         {
+            _dataStore = dataStore;
+            eventAggregator.GetEvent<UpdateReadyEvent>().Subscribe(AllReady);
             Navigate = new Command(async (sender) =>
             {
                 var pageName = sender switch
@@ -29,9 +43,18 @@ namespace Slipways.Mobile.ViewModels
                     CommandParameter.Levels => typeof(LevelPage).Name,
                     _ => string.Empty
                 };
-                await navigationService.NavigateAsync(pageName);
+                await navigationService
+                .NavigateAsync(pageName)
+                .ConfigureAwait(false);
             });
             Title = "slipways.de";
+            Running = true;
+        }
+
+        public void AllReady(string payload)
+        {
+            if (payload == "rdy")
+                Running = false;
         }
 
         public override void OnNavigatedFrom(
@@ -39,9 +62,11 @@ namespace Slipways.Mobile.ViewModels
         {
         }
 
-        public override void OnNavigatedTo(
+        public async override void OnNavigatedTo(
             INavigationParameters parameters)
         {
+            await _dataStore.LoadData()
+                .ConfigureAwait(false);
         }
     }
 }

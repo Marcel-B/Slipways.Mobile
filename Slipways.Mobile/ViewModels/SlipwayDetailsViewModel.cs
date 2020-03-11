@@ -1,7 +1,5 @@
-﻿using System;
-using Prism.Navigation;
+﻿using Prism.Navigation;
 using Slipways.Mobile.Data.Models;
-using SQLitePCL;
 using Xamarin.Forms.Maps;
 
 namespace Slipways.Mobile.ViewModels
@@ -53,7 +51,7 @@ namespace Slipways.Mobile.ViewModels
                 Label = Slipway.Name,
                 Position = position,
                 Type = PinType.Place,
-                Address = Slipway.Name
+                Address = Slipway.Street
             };
             MapSpan mapSpan = new MapSpan(position, 0.01, 0.01);
             Map = new Map(mapSpan);

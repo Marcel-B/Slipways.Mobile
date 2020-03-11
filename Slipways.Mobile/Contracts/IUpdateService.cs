@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace Slipways.Mobile.Contracts
 {
     public interface IUpdateService
     {
+        Task UpdateExtra();
+        Task UpdateManufacturer();
         Task UpdateWater();
+        Task UpdateSlipway();
+        Task UpdateMarina();
     }
 }

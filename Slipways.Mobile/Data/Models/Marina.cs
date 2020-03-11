@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Slipways.Mobile.Contracts;
+using SQLite;
 using System;
 namespace Slipways.Mobile.Data.Models
 {
@@ -20,7 +21,15 @@ namespace Slipways.Mobile.Data.Models
         public string Url { get; set; }
         public double Longitude { get; set; }
         public double Latitude { get; set; }
+
+        [Ignore]
+        public Water Water { get; set; }
+
         public DateTime? Updated { get; set; }
+
+        public string Watername => Water.Longname;
+
+        [JsonIgnore]
         public Guid WaterPk { get; set; }
     }
 }

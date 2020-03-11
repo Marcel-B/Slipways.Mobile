@@ -1,6 +1,7 @@
 ﻿using Slipways.Mobile.Contracts;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Slipways.Mobile.Data.Repositories
 {
@@ -18,7 +19,7 @@ namespace Slipways.Mobile.Data.Repositories
 
         public virtual List<T> GetAll()
         {
-            if(Cache == null)
+            if(Cache == null || Cache.Count() == 0)
             {
                 Cache = new List<T>();
                 Cache = Context.Table<T>().ToList();
