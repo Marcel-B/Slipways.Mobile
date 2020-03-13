@@ -5,7 +5,7 @@ using Xamarin.Forms.Maps;
 
 namespace Slipways.Mobile.ViewModels
 {
-    public class SlipwayDetailsViewModel : ViewModelBase<Slipway>
+    public class SlipwayDetailsViewModel : ViewModelBase
     {
         private Slipway _slipway;
         public Slipway Slipway
@@ -32,7 +32,7 @@ namespace Slipways.Mobile.ViewModels
 
         public SlipwayDetailsViewModel(
             IEventAggregator eventAggregator,
-            INavigationService navigationService) : base("slipway", eventAggregator, navigationService)
+            INavigationService navigationService) : base(navigationService)
         {
         }
 

@@ -1,5 +1,6 @@
 ﻿using Prism.Events;
 using Prism.Navigation;
+using Prism.Services;
 using Slipways.Mobile.Contracts;
 using Slipways.Mobile.Events;
 using Slipways.Mobile.Helpers;
@@ -10,9 +11,10 @@ using Xamarin.Forms;
 
 namespace Slipways.Mobile.ViewModels
 {
-    public class MainPageViewModel : ViewModelBase<string>
+    public class MainPageViewModel : ViewModelBase
     {
         private bool _running;
+        private IPageDialogService _dialogService;
         private IDataStore _dataStore;
 
         public bool Running
@@ -24,11 +26,15 @@ namespace Slipways.Mobile.ViewModels
         public ICommand Navigate { get; set; }
 
         public MainPageViewModel(
+            IPageDialogService dialogService,
             IDataStore dataStore,
             IEventAggregator eventAggregator,
-            INavigationService navigationService) : base("MainPage", eventAggregator, navigationService)
+            INavigationService navigationService) : base(navigationService)
         {
+            _dialogService = dialogService;
             _dataStore = dataStore;
+            eventAggregator.GetEvent<InitializationReadyEvent>().Subscribe(Ready);
+
             Navigate = new Command(async (sender) =>
             {
                 var pageName = sender switch
@@ -42,12 +48,19 @@ namespace Slipways.Mobile.ViewModels
                     CommandParameter.Levels => typeof(LevelPage).Name,
                     _ => string.Empty
                 };
-                await navigationService
-                .NavigateAsync(pageName)
-                .ConfigureAwait(false);
+                await _dialogService.DisplayAlertAsync("Alert", "You have been alerted", "OK");
+
+                //await navigationService
+                //.NavigateAsync(pageName)
+                //.ConfigureAwait(false);
             });
             Title = "slipways.de";
             Running = true;
+        }
+
+        public async void Ready(bool rdy)
+        {
+            //await _dialogService.DisplayAlertAsync("Ready", "Initialization of data ready", "OK");
         }
 
         public override void OnNavigatedFrom(
@@ -55,11 +68,11 @@ namespace Slipways.Mobile.ViewModels
         {
         }
 
-        public async override void OnNavigatedTo(
+        public override void OnNavigatedTo(
             INavigationParameters parameters)
         {
-            await _dataStore.LoadData()
-                .ConfigureAwait(false);
+            //await _dataStore.LoadData()
+            //    .ConfigureAwait(false);
         }
     }
 }

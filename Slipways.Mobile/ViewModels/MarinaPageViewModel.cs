@@ -3,7 +3,7 @@ using Prism.Navigation;
 using Slipways.Mobile.Contracts;
 using Slipways.Mobile.Data;
 using Slipways.Mobile.Data.Models;
-using Slipways.Mobile.Events;
+using Slipways.Mobile.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -13,7 +13,7 @@ using System.Windows.Input;
 
 namespace Slipways.Mobile.ViewModels
 {
-    public class MarinaPageViewModel : ViewModelBase<Marina>
+    public class MarinaPageViewModel : ListViewModel<Marina>
     {
         private ObservableCollection<Marina> _marinas;
         private IDataStore _dataStore;
@@ -28,7 +28,7 @@ namespace Slipways.Mobile.ViewModels
         public MarinaPageViewModel(
                         IEventAggregator eventAggregator,
                         IDataStore dataStore,
-                        INavigationService navigationService) : base("marina", eventAggregator,navigationService)
+                        INavigationService navigationService) : base(DataT.Marina, eventAggregator,navigationService)
         {
             Title = "Marinas";
             Marinas = new ObservableCollection<Marina>();

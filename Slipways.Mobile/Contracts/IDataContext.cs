@@ -12,6 +12,6 @@ namespace Slipways.Mobile.Contracts
         Task<int> InsertAsync<T>(T entity) where T : IEntity, new();
         Task<int> UpdateAsync<T>(T entity) where T : IEntity, new();
         Task<int> DeleteAsync<T>(T entity) where T : IEntity, new();
-        Task Initialize();
+        Task<bool> Initialize();
     }
 }

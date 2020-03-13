@@ -1,49 +1,34 @@
-﻿using System.Collections.ObjectModel;
-using System.Linq;
-using Prism.Events;
+﻿using Prism.Events;
 using Prism.Navigation;
 using Slipways.Mobile.Contracts;
 using Slipways.Mobile.Data.Models;
-using Slipways.Mobile.Events;
+using Slipways.Mobile.Helpers;
 
 namespace Slipways.Mobile.ViewModels
 {
-    public class WaterPageViewModel : ViewModelBase<Water>
+    public class WaterPageViewModel : ListViewModel<Water>
     {
-        private readonly IRepositoryWrapper _dataStore;
-
-        private string _username;
-        public string Username
-        {
-            get => _username;
-            set => SetProperty(ref _username, value);
-        }
-
+        private readonly IRepositoryWrapper _repository;
         public WaterPageViewModel(
-            IRepositoryWrapper rep,
+            IRepositoryWrapper repository,
             IEventAggregator eventAggregator,
-            INavigationService navigationService) : base("water", eventAggregator,  navigationService)
+            INavigationService navigationService) : base(DataT.Water, eventAggregator, navigationService)
         {
             Title = "Gewässer";
-            _dataStore = rep;
+            _repository = repository;
         }
 
         public override void OnNavigatedFrom(
             INavigationParameters parameters)
-        {
-        }
+        { }
 
         public override async void OnNavigatedTo(
             INavigationParameters parameters)
         {
-            var waters = await _dataStore.Waters.GetAllAsync();
-            Data.Clear();
-            foreach (var water in waters)
-            {
-                Data.Add(water);
-            }
-            //if (Waters.Count == 0)
-            //    Update("water");
+            var waters = await _repository.Waters.GetAllAsync();
+            //Data.Clear();
+            //foreach (var water in waters)
+            //    Data.Add(water);
         }
     }
 }

@@ -9,7 +9,7 @@ namespace Slipways.Mobile.ViewModels
     {
 
     }
-    public class InfoPageViewModel : ViewModelBase<Info>
+    public class InfoPageViewModel : ViewModelBase
     {
         private int _slipwaysCount;
         private int _watersCount;
@@ -39,7 +39,7 @@ namespace Slipways.Mobile.ViewModels
             IDataStore dataStore,
             IEventAggregator eventAggregator,
             INavigationService navigationService)
-            :base("info", eventAggregator, navigationService)
+            : base(navigationService)
         {
             Title = "Info";
             _dataStore = dataStore;

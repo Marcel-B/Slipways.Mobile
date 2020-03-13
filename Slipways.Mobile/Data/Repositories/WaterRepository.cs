@@ -5,8 +5,6 @@ namespace Slipways.Mobile.Data.Repositories
 {
     public class WaterRepository : BaseRepository<Water>, IWaterRepository
     {
-        public WaterRepository(IDataContext dataContext) : base(dataContext)
-        {
-        }
+        public WaterRepository(IDataContext dataContext) : base(dataContext) { }
     }
 }

@@ -20,7 +20,7 @@ namespace Slipways.Mobile.Data.Repositories
 
         public async virtual Task<List<T>> GetAllAsync()
         {
-            if(Cache == null || Cache.Count() == 0)
+            if (Cache == null || Cache.Count() == 0)
             {
                 Cache = new List<T>();
                 Cache = await Context.Table<T>().ToListAsync();

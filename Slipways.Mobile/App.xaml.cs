@@ -13,6 +13,8 @@ using GraphQL.Client.Http;
 using GraphQL.Client.Serializer.Newtonsoft;
 using Slipways.Mobile.Data.Repositories;
 using Prism.Events;
+using Slipways.Mobile.Events;
+using Prism.Services;
 
 namespace Slipways.Mobile
 {
@@ -40,11 +42,10 @@ namespace Slipways.Mobile
         {
             InitializeComponent();
             var context = Container.Resolve<IDataContext>();
-            lock (context)
-            {
-                context.Initialize();
-            }
             await NavigationService.NavigateAsync("NavigationPage/MainPage");
+            var eventAggregator = Container.Resolve<IEventAggregator>();
+            var e = eventAggregator.GetEvent<InitializationReadyEvent>();
+            var initializeReady = await context.Initialize();
         }
 
         protected override void RegisterTypes(

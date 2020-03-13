@@ -6,15 +6,16 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
+using Slipways.Mobile.Helpers;
 
 namespace Slipways.Mobile.ViewModels
 {
-    public class LevelPageViewModel : ViewModelBase<Station>
+    public class LevelPageViewModel : ListViewModel<Station>
     {
         public LevelPageViewModel(
             IEventAggregator eventAggregator,
             IDataStore dataStore,
-            INavigationService navigationService) : base("station", eventAggregator, navigationService)
+            INavigationService navigationService) : base(DataT.Station, eventAggregator, navigationService)
         {
             Title = "Pegel";
         }

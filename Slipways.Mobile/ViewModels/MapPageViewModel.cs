@@ -6,7 +6,7 @@ using Xamarin.Forms.Maps;
 
 namespace Slipways.Mobile.ViewModels
 {
-    public class MapPageViewModel : ViewModelBase<string>
+    public class MapPageViewModel : ViewModelBase
     {
         private Map _map;
         private IDataStore _dataStore;
@@ -20,7 +20,7 @@ namespace Slipways.Mobile.ViewModels
         public MapPageViewModel(
             IDataStore dataStore,
             IEventAggregator eventAggregator,
-            INavigationService navigationService) : base("map", eventAggregator,navigationService)
+            INavigationService navigationService) : base(navigationService)
         {
             _dataStore = dataStore;
             Title = "Übersicht";

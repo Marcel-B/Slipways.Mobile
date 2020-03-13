@@ -40,9 +40,6 @@ namespace Slipways.Mobile.Data
         /// </summary>
         public async Task LoadData()
         {
-            if (!DataContext.Initialized)
-                await _context.Initialize();
-
             var waters = await _repository.Waters.GetAllAsync();
             if (waters == null || waters.Count() == 0)
                 await _updateService

@@ -6,7 +6,7 @@
     Title="{Binding Title}">
 
     <ContentPage.Content>
-        <ListView ItemsSource="{Binding Waters}">
+        <ListView ItemsSource="{Binding Data}">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <ViewCell>

@@ -1,5 +1,5 @@
 ﻿using Prism.Events;
-using Slipways.Mobile.ViewModels;
+using Slipways.Mobile.Helpers;
 
 namespace Slipways.Mobile.Events
 {

@@ -4,10 +4,7 @@ using Slipways.Mobile.Data;
 using Slipways.Mobile.Data.Models;
 using Slipways.Mobile.Events;
 using Slipways.Mobile.Helpers;
-using Slipways.Mobile.ViewModels;
-using System;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 namespace Slipways.Mobile.Services
@@ -23,9 +20,16 @@ namespace Slipways.Mobile.Services
             IRepositoryWrapper repositoryWrapper,
             IGraphQLService graphQLService)
         {
+            eventAggregator.GetEvent<InitializationReadyEvent>().Subscribe(Update);
             _eventAggregator = eventAggregator;
             _repositoryWrapper = repositoryWrapper;
             _graphQLService = graphQLService;
+        }
+
+        public async void Update(
+            bool start)
+        {
+            await UpdateWater();
         }
 
         public Task UpdateExtra()
@@ -114,15 +118,27 @@ namespace Slipways.Mobile.Services
 
         public async Task UpdateWater()
         {
+            // Fetch values from API
             var response = await _graphQLService.FetchValuesAsync<WatersResponse>(Queries.Waters);
-            foreach (var water in response.Waters)
-                await _repositoryWrapper.Waters.InsertAsync(water);
 
+
+            // Insert or Update values
+            foreach (var water in response.Waters)
+            {
+                var tmp = await _repositoryWrapper.Waters.GetByUuidAsync(water.Pk);
+                if (tmp == null)
+                    await _repositoryWrapper.Waters.InsertAsync(water);
+                else if (tmp.Updated != water.Updated)
+                    await _repositoryWrapper.Waters.UpdateAsync(tmp.Id, water);
+            }
+
+            // Fire event
             var eventArgs = new DataUpdateEventArgs<Water>
             {
-                Type = "water",
+                Type = DataT.Water,
                 Data = await _repositoryWrapper.Waters.GetAllAsync()
             };
+
             _eventAggregator
                 .GetEvent<UpdateReadyEvent<Water>>()
                 .Publish(eventArgs);
