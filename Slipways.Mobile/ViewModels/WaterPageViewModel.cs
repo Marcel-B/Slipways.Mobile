@@ -8,17 +8,9 @@ using Slipways.Mobile.Events;
 
 namespace Slipways.Mobile.ViewModels
 {
-    public class WaterPageViewModel : ViewModelBase
+    public class WaterPageViewModel : ViewModelBase<Water>
     {
-        private ObservableCollection<Water> _waters;
-
-        public ObservableCollection<Water> Waters
-        {
-            get => _waters;
-            set => SetProperty(ref _waters, value);
-        }
-
-        private readonly IDataStore _dataStore;
+        private readonly IRepositoryWrapper _dataStore;
 
         private string _username;
         public string Username
@@ -28,25 +20,12 @@ namespace Slipways.Mobile.ViewModels
         }
 
         public WaterPageViewModel(
-            IDataStore dataStore,
+            IRepositoryWrapper rep,
             IEventAggregator eventAggregator,
-            INavigationService navigationService) : base(navigationService)
+            INavigationService navigationService) : base("water", eventAggregator,  navigationService)
         {
-            Waters = new ObservableCollection<Water>();
             Title = "Gewässer";
-            _dataStore = dataStore;
-            eventAggregator.GetEvent<UpdateReadyEvent>().Subscribe(Update, ThreadOption.UIThread);
-        }
-
-        public void Update(
-            string value)
-        {
-            if (value == "water")
-            {
-                Waters.Clear();
-                foreach (var water in _dataStore.Waters.OrderBy(_ => _.Longname))
-                    Waters.Add(water);
-            }
+            _dataStore = rep;
         }
 
         public override void OnNavigatedFrom(
@@ -54,11 +33,17 @@ namespace Slipways.Mobile.ViewModels
         {
         }
 
-        public override void OnNavigatedTo(
+        public override async void OnNavigatedTo(
             INavigationParameters parameters)
         {
-            if (Waters.Count == 0)
-                Update("water");
+            var waters = await _dataStore.Waters.GetAllAsync();
+            Data.Clear();
+            foreach (var water in waters)
+            {
+                Data.Add(water);
+            }
+            //if (Waters.Count == 0)
+            //    Update("water");
         }
     }
 }

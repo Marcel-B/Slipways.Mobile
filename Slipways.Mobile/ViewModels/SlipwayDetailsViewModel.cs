@@ -1,10 +1,11 @@
-﻿using Prism.Navigation;
+﻿using Prism.Events;
+using Prism.Navigation;
 using Slipways.Mobile.Data.Models;
 using Xamarin.Forms.Maps;
 
 namespace Slipways.Mobile.ViewModels
 {
-    public class SlipwayDetailsViewModel : ViewModelBase
+    public class SlipwayDetailsViewModel : ViewModelBase<Slipway>
     {
         private Slipway _slipway;
         public Slipway Slipway
@@ -30,7 +31,8 @@ namespace Slipways.Mobile.ViewModels
         }
 
         public SlipwayDetailsViewModel(
-            INavigationService navigationService) : base(navigationService)
+            IEventAggregator eventAggregator,
+            INavigationService navigationService) : base("slipway", eventAggregator, navigationService)
         {
         }
 

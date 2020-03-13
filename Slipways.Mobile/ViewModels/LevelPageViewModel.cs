@@ -9,27 +9,14 @@ using System.Text;
 
 namespace Slipways.Mobile.ViewModels
 {
-    public class LevelPageViewModel : ViewModelBase
+    public class LevelPageViewModel : ViewModelBase<Station>
     {
-        private IEventAggregator _eventAggregator;
-        private IDataStore _dataStore;
-
-        private ObservableCollection<Manufacturer> _manufacturers;
-        public ObservableCollection<Manufacturer> Manufacturers
-        {
-            get => _manufacturers;
-            set => SetProperty(ref _manufacturers, value);
-        }
-
         public LevelPageViewModel(
             IEventAggregator eventAggregator,
             IDataStore dataStore,
-            INavigationService navigationService) : base(navigationService)
+            INavigationService navigationService) : base("station", eventAggregator, navigationService)
         {
             Title = "Pegel";
-            _eventAggregator = eventAggregator;
-            _dataStore = dataStore;
-            Manufacturers = new ObservableCollection<Manufacturer>();
         }
 
         public override void OnNavigatedFrom(
@@ -40,10 +27,10 @@ namespace Slipways.Mobile.ViewModels
         public override void OnNavigatedTo(
             INavigationParameters parameters)
         {
-            foreach (var manufacturer in _dataStore.Manufacturers)
-            {
-                Manufacturers.Add(manufacturer);
-            }
+            //foreach (var manufacturer in _dataStore.Manufacturers)
+            //{
+            //    Manufacturers.Add(manufacturer);
+            //}
         }
     }
 }

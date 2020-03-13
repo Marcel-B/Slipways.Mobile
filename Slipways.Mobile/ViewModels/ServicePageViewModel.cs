@@ -1,14 +1,14 @@
-﻿using Prism.Navigation;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Prism.Events;
+using Prism.Navigation;
+using Slipways.Mobile.Data.Models;
 
 namespace Slipways.Mobile.ViewModels
 {
-    public class ServicePageViewModel : ViewModelBase
+    public class ServicePageViewModel : ViewModelBase<Service>
     {
         public ServicePageViewModel(
-            INavigationService navigationService) : base(navigationService)
+            IEventAggregator eventAggregator,
+            INavigationService navigationService) : base("service", eventAggregator, navigationService)
         {
             Title = "Werkstätten";
         }

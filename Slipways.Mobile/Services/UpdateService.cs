@@ -4,6 +4,7 @@ using Slipways.Mobile.Data;
 using Slipways.Mobile.Data.Models;
 using Slipways.Mobile.Events;
 using Slipways.Mobile.Helpers;
+using Slipways.Mobile.ViewModels;
 using System;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -13,7 +14,7 @@ namespace Slipways.Mobile.Services
 {
     public class UpdateService : IUpdateService
     {
-        private UpdateReadyEvent _updateReadyEvent;
+        private IEventAggregator _eventAggregator;
         private IRepositoryWrapper _repositoryWrapper;
         private IGraphQLService _graphQLService;
 
@@ -22,8 +23,7 @@ namespace Slipways.Mobile.Services
             IRepositoryWrapper repositoryWrapper,
             IGraphQLService graphQLService)
         {
-            _updateReadyEvent = eventAggregator.GetEvent<UpdateReadyEvent>();
-
+            _eventAggregator = eventAggregator;
             _repositoryWrapper = repositoryWrapper;
             _graphQLService = graphQLService;
         }
@@ -42,62 +42,90 @@ namespace Slipways.Mobile.Services
             foreach (var marina in response.Ports.OrderBy(_ => _.Name))
             {
                 marina.WaterPk = marina.Water.Pk;
-                var tmp = _repositoryWrapper.Marinas.GetByUuid(marina.Pk);
+                var tmp = await _repositoryWrapper.Marinas.GetByUuidAsync(marina.Pk);
                 if (tmp == null)
                 {
-                    _repositoryWrapper.Marinas.Insert(marina);
+                    await _repositoryWrapper.Marinas.InsertAsync(marina);
                 }
                 else if (tmp.Updated != marina.Updated)
                 {
                     marina.Id = tmp.Id;
-                    _repositoryWrapper.Marinas.Update(tmp.Id, marina);
+                    await _repositoryWrapper.Marinas.UpdateAsync(tmp.Id, marina);
                 }
             }
-            _updateReadyEvent.Publish("marina");
+
+            var eventArgs = new DataUpdateEventArgs<Marina>
+            {
+                Type = "marina",
+                Data = await _repositoryWrapper.Marinas.GetAllAsync()
+            };
+
+            _eventAggregator
+                .GetEvent<UpdateReadyEvent<Marina>>()
+                .Publish(eventArgs);
         }
 
         public async Task UpdateManufacturer()
         {
-            var response = await _graphQLService
-                .FetchValuesAsync<ManufacturersResponse>(Queries.Manufacturers)
-                .ConfigureAwait(false);
+            //var response = await _graphQLService
+            //    .FetchValuesAsync<ManufacturersResponse>(Queries.Manufacturers)
+            //    .ConfigureAwait(false);
 
-            foreach (var manufacturer in response.Manufacturers)
-                _repositoryWrapper.Manufacturers.Insert(manufacturer);
-            _updateReadyEvent.Publish("manufacturer");
+            //foreach (var manufacturer in response.Manufacturers)
+            //    await _repositoryWrapper.Manufacturers.InsertAsync(manufacturer);
+            //_updateReadyEvent.Publish("manufacturer");
         }
 
         public async Task UpdateSlipway()
         {
-            var response = await _graphQLService
-                .FetchValuesAsync<SlipwaysResponse>(Queries.Slipways)
-                .ConfigureAwait(false);
+            //var response = await _graphQLService
+            //    .FetchValuesAsync<SlipwaysResponse>(Queries.Slipways)
+            //    .ConfigureAwait(false);
 
-            foreach (var slipway in response.Slipways)
-            {
-                slipway.WaterPk = slipway.Water.Pk;
-                slipway.MarinaPk = slipway.Marina == null ? Guid.Empty : slipway.Marina.Pk;
-                var tmp = _repositoryWrapper.Slipways.GetByUuid(slipway.Pk);
+            //foreach (var slipway in response.Slipways)
+            //{
+            //    slipway.WaterPk = slipway.Water.Pk;
+            //    slipway.MarinaPk = slipway.Marina == null ? Guid.Empty : slipway.Marina.Pk;
+            //    var tmp = await _repositoryWrapper.Slipways.GetByUuidAsync(slipway.Pk);
 
-                if (tmp == null)
-                {
-                    _repositoryWrapper.Slipways.Insert(slipway);
-                }
-                else if (tmp.Updated != slipway.Updated)
-                {
-                    slipway.Id = tmp.Id;
-                    _repositoryWrapper.Slipways.Update(slipway.Id, slipway);
-                }
-            }
-            _updateReadyEvent.Publish("slipway");
+            //    if (tmp == null)
+            //    {
+            //        await _repositoryWrapper.Slipways.InsertAsync(slipway);
+            //    }
+            //    else if (tmp.Updated != slipway.Updated)
+            //    {
+            //        slipway.Id = tmp.Id;
+            //        await _repositoryWrapper.Slipways.UpdateAsync(slipway.Id, slipway);
+            //    }
+            //}
+            //_updateReadyEvent.Publish("slipway");
+        }
+
+        public async Task UpdateStation()
+        {
+            //var response = await _graphQLService.FetchValuesAsync<StationResponse>(Queries.Stations);
+            //foreach (var station in response.Stations)
+            //{
+            //    station.WaterPk = station?.Water.Pk ?? Guid.Empty;
+            //    await _repositoryWrapper.Stations.InsertAsync(station);
+            //}
+            //_updateReadyEvent.Publish("station");
         }
 
         public async Task UpdateWater()
         {
             var response = await _graphQLService.FetchValuesAsync<WatersResponse>(Queries.Waters);
             foreach (var water in response.Waters)
-                _repositoryWrapper.Waters.Insert(water);
-            _updateReadyEvent.Publish("water");
+                await _repositoryWrapper.Waters.InsertAsync(water);
+
+            var eventArgs = new DataUpdateEventArgs<Water>
+            {
+                Type = "water",
+                Data = await _repositoryWrapper.Waters.GetAllAsync()
+            };
+            _eventAggregator
+                .GetEvent<UpdateReadyEvent<Water>>()
+                .Publish(eventArgs);
         }
     }
 }

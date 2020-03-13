@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Slipways.Mobile.Data.Repositories
 {
@@ -17,43 +18,43 @@ namespace Slipways.Mobile.Data.Repositories
             Context = context;
         }
 
-        public virtual List<T> GetAll()
+        public async virtual Task<List<T>> GetAllAsync()
         {
             if(Cache == null || Cache.Count() == 0)
             {
                 Cache = new List<T>();
-                Cache = Context.Table<T>().ToList();
+                Cache = await Context.Table<T>().ToListAsync();
             }
             return Cache;
         }
 
-        public List<T> GetByQuery(string query)
+        public async Task<List<T>> GetByQueryAsync(string query)
             // SQL queries are also possible
-            => Context.Query<T>(query);// "SELECT * FROM [TodoItem] WHERE [Done] = 0"
+            => await Context.QueryAsync<T>(query);// "SELECT * FROM [TodoItem] WHERE [Done] = 0"
 
-        public T Get(
+        public async Task<T> GetAsync(
             int id)
-            => Context.Table<T>()
+            => await Context.Table<T>()
             .Where(_ => _.Id == id)
-            .FirstOrDefault();
+            .FirstOrDefaultAsync();
 
-        public T GetByUuid(
+        public async Task<T> GetByUuidAsync(
             Guid uuid)
-           => Context
+           => await Context
             .Table<T>()
             .Where(_ => _.Pk == uuid)
-            .FirstOrDefault();
+            .FirstOrDefaultAsync();
 
-        public int Insert(
+        public async Task<int> InsertAsync(
             T entity)
-            => Context.Insert(entity);
+            => await Context.InsertAsync(entity);
 
-        public int Update(
+        public async Task<int> UpdateAsync(
             int id, T entity)
-            => Context.Update(entity);
+            => await Context.UpdateAsync(entity);
 
-        public int Delete(
+        public async Task<int> DeleteAsync(
             T item)
-            => Context.Delete(item);
+            => await Context.DeleteAsync(item);
     }
 }

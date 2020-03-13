@@ -39,6 +39,11 @@ namespace Slipways.Mobile
         protected async override void OnInitialized()
         {
             InitializeComponent();
+            var context = Container.Resolve<IDataContext>();
+            lock (context)
+            {
+                context.Initialize();
+            }
             await NavigationService.NavigateAsync("NavigationPage/MainPage");
         }
 

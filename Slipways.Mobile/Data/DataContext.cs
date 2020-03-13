@@ -5,52 +5,57 @@ using SQLite;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Slipways.Mobile.Data
 {
     public class DataContext : IDataContext
     {
-        public SQLiteConnection Context { get; private set; }
+        public SQLiteAsyncConnection Context { get; private set; }
         public static bool Initialized = false;
 
-        public TableQuery<T> Table<T>() where T : IEntity, new() => Context.Table<T>();
-        public List<T> Query<T>(string query) where T : IEntity, new() => Context.Query<T>(query);
-        public int Insert<T>(T entity) where T : IEntity, new() => Context.Insert(entity);
-        public int Update<T>(T entity) where T : IEntity, new() => Context.Update(entity);
-        public int Delete<T>(T entity) where T : IEntity, new() => Context.Delete<T>(entity);
+        public AsyncTableQuery<T> Table<T>() where T : IEntity, new() => Context.Table<T>();
+        public Task<List<T>> QueryAsync<T>(string query) where T : IEntity, new() => Context.QueryAsync<T>(query);
+        public Task<int> InsertAsync<T>(T entity) where T : IEntity, new() => Context.InsertAsync(entity);
+        public Task<int> UpdateAsync<T>(T entity) where T : IEntity, new() => Context.UpdateAsync(entity);
+        public Task<int> DeleteAsync<T>(T entity) where T : IEntity, new() => Context.DeleteAsync<T>(entity);
 
         public DataContext()
         {
-            Context = new SQLiteConnection(Constants.DatabasePath, Constants.Flags);
+            Context = new SQLiteAsyncConnection(Constants.DatabasePath, Constants.Flags);
         }
 
-        public void Initialize()
+        public async Task Initialize()
         {
             if (!Initialized)
             {
+                Initialized = true;
                 var mappings = Context.TableMappings;
 
                 if (!mappings.Any(m => m.MappedType.Name == typeof(Water).Name))
-                    Context.CreateTable<Water>(CreateFlags.None);
+                    await Context.CreateTableAsync<Water>(CreateFlags.None);
 
                 if (!mappings.Any(m => m.MappedType.Name == typeof(Slipway).Name))
-                    Context.CreateTable<Slipway>(CreateFlags.None);
+                    await Context.CreateTableAsync<Slipway>(CreateFlags.None);
 
                 if (!mappings.Any(m => m.MappedType.Name == typeof(Manufacturer).Name))
-                    Context.CreateTable<Manufacturer>(CreateFlags.None);
+                    await Context.CreateTableAsync<Manufacturer>(CreateFlags.None);
 
                 if (!mappings.Any(m => m.MappedType.Name == typeof(Extra).Name))
-                    Context.CreateTable<Extra>(CreateFlags.None);
+                    await Context.CreateTableAsync<Extra>(CreateFlags.None);
 
                 if (!mappings.Any(m => m.MappedType.Name == typeof(Marina).Name))
-                    Context.CreateTable<Marina>(CreateFlags.None);
+                    await Context.CreateTableAsync<Marina>(CreateFlags.None);
 
                 if (!mappings.Any(m => m.MappedType.Name == typeof(Service).Name))
-                    Context.CreateTable<Service>(CreateFlags.None);
+                    await Context.CreateTableAsync<Service>(CreateFlags.None);
+
+                if(!mappings.Any(m => m.MappedType.Name == typeof(Station).Name))
+                    await Context.CreateTableAsync<Station>(CreateFlags.None);
 
                 if (!mappings.Any(m => m.MappedType.Name == typeof(User).Name))
                 {
-                    Context.CreateTable<User>(CreateFlags.None);
+                    await Context.CreateTableAsync<User>(CreateFlags.None);
                     var user = new User
                     {
                         Created = DateTime.Now,
@@ -58,7 +63,7 @@ namespace Slipways.Mobile.Data
                         Name = "John Doe",
                         Version = "1.0"
                     };
-                    Context.Insert(user);
+                    await Context.InsertAsync(user);
                 }
                 else
                 {

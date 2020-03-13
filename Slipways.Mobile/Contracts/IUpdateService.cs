@@ -9,5 +9,6 @@ namespace Slipways.Mobile.Contracts
         Task UpdateWater();
         Task UpdateSlipway();
         Task UpdateMarina();
+        Task UpdateStation();
     }
 }

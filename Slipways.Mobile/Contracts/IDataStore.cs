@@ -6,12 +6,12 @@ namespace Slipways.Mobile.Contracts
 {
     public interface IDataStore
     {
-        IEnumerable<Manufacturer> Manufacturers { get; }
-        IEnumerable<Extra> Extras { get; }
-        IEnumerable<Slipway> Slipways { get; }
-        IEnumerable<Water> Waters { get; }
-        IEnumerable<Marina> Marinas { get; }
-        IEnumerable<Service> Services { get; }
+        //IEnumerable<Manufacturer> Manufacturers { get; }
+        //IEnumerable<Extra> Extras { get; }
+        //IEnumerable<Slipway> Slipways { get; }
+        //IEnumerable<Water> Waters { get; }
+        //IEnumerable<Marina> Marinas { get; }
+        //IEnumerable<Service> Services { get; }
 
         Task LoadData();
     }

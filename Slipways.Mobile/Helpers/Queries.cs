@@ -7,5 +7,6 @@
         public const string Manufacturers = "{ manufacturers { id name updated } }";
         public const string Extras = "{ extras { id name updated } }";
         public const string Marinas = "{ ports { id name street postalcode city phone email url longitude latitude updated slipways { id } water { id } } }";
+        public const string Stations = "query { stations { agency id km latitude longname longitude number updated water { id } } }";
     }
 }

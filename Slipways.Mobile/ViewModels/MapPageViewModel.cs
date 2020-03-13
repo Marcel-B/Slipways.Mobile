@@ -1,11 +1,12 @@
-﻿using Prism.Navigation;
+﻿using Prism.Events;
+using Prism.Navigation;
 using Slipways.Mobile.Contracts;
 using Slipways.Mobile.Data.Models;
 using Xamarin.Forms.Maps;
 
 namespace Slipways.Mobile.ViewModels
 {
-    public class MapPageViewModel : ViewModelBase
+    public class MapPageViewModel : ViewModelBase<string>
     {
         private Map _map;
         private IDataStore _dataStore;
@@ -18,7 +19,8 @@ namespace Slipways.Mobile.ViewModels
 
         public MapPageViewModel(
             IDataStore dataStore,
-            INavigationService navigationService) : base(navigationService)
+            IEventAggregator eventAggregator,
+            INavigationService navigationService) : base("map", eventAggregator,navigationService)
         {
             _dataStore = dataStore;
             Title = "Übersicht";
@@ -29,23 +31,23 @@ namespace Slipways.Mobile.ViewModels
 
         public override void OnNavigatedTo(INavigationParameters parameters)
         {
-            var slipways = _dataStore.Slipways;
-            var position = new Position(51.312801, 9.481544);
-            var mapSpan = new MapSpan(position, 10, 10);
-            Map = new Map(mapSpan);
-            foreach (var slipway in slipways)
-            {
-                var pos = new Position(slipway.Latitude, slipway.Longitude);
-                var pin = new Pin
-                {
-                    Label = slipway.Name,
-                    Position = pos,
-                    Type = PinType.Place,
-                    Address = slipway.Street
-                };
-                Map.Pins.Add(pin);
-            }
-            Map.MapType = MapType.Satellite;
+            //var slipways = _dataStore.Slipways;
+            //var position = new Position(51.312801, 9.481544);
+            //var mapSpan = new MapSpan(position, 10, 10);
+            //Map = new Map(mapSpan);
+            //foreach (var slipway in slipways)
+            //{
+            //    var pos = new Position(slipway.Latitude, slipway.Longitude);
+            //    var pin = new Pin
+            //    {
+            //        Label = slipway.Name,
+            //        Position = pos,
+            //        Type = PinType.Place,
+            //        Address = slipway.Street
+            //    };
+            //    Map.Pins.Add(pin);
+            //}
+            //Map.MapType = MapType.Satellite;
         }
     }
 }

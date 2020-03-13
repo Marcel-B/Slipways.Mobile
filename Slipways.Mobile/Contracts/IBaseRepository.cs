@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Slipways.Mobile.Contracts
 {
     public interface IBaseRepository<T>
     {
-        List<T> GetAll();
-        List<T> GetByQuery(string query);
-        T Get(int id);
-        T GetByUuid(Guid uuid);
-        int Insert(T entity);
-        int Update(int id, T entity);
-        int Delete(T item);
+        Task<List<T>> GetAllAsync();
+        Task<List<T>> GetByQueryAsync(string query);
+        Task<T> GetAsync(int id);
+        Task<T> GetByUuidAsync(Guid uuid);
+        Task<int> InsertAsync(T entity);
+        Task<int> UpdateAsync(int id, T entity);
+        Task<int> DeleteAsync(T item);
     }
 }

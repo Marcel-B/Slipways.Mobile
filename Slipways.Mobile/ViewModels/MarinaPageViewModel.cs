@@ -13,7 +13,7 @@ using System.Windows.Input;
 
 namespace Slipways.Mobile.ViewModels
 {
-    public class MarinaPageViewModel : ViewModelBase
+    public class MarinaPageViewModel : ViewModelBase<Marina>
     {
         private ObservableCollection<Marina> _marinas;
         private IDataStore _dataStore;
@@ -28,23 +28,11 @@ namespace Slipways.Mobile.ViewModels
         public MarinaPageViewModel(
                         IEventAggregator eventAggregator,
                         IDataStore dataStore,
-INavigationService navigationService) : base(navigationService)
+                        INavigationService navigationService) : base("marina", eventAggregator,navigationService)
         {
-            eventAggregator.GetEvent<UpdateReadyEvent>().Subscribe(Update);
             Title = "Marinas";
             Marinas = new ObservableCollection<Marina>();
             _dataStore = dataStore;
-        }
-
-        public void Update(
-         string payload)
-        {
-            if (payload == "marina")
-            {
-                Marinas.Clear();
-                foreach (var marina in _dataStore.Marinas.OrderBy(_ => _.Name))
-                    Marinas.Add(marina);
-            }
         }
 
         public override void OnNavigatedFrom(
@@ -56,8 +44,8 @@ INavigationService navigationService) : base(navigationService)
         public override void OnNavigatedTo(
             INavigationParameters parameters)
         {
-            if (Marinas.Count == 0)
-                Update("marina");
+            //if (Marinas.Count == 0)
+            //    Update("marina");
         }
     }
 }

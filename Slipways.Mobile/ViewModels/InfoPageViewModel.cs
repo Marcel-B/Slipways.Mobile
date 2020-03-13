@@ -1,10 +1,15 @@
 ﻿using System.Linq;
+using Prism.Events;
 using Prism.Navigation;
 using Slipways.Mobile.Contracts;
 
 namespace Slipways.Mobile.ViewModels
 {
-    public class InfoPageViewModel : ViewModelBase
+    public class Info
+    {
+
+    }
+    public class InfoPageViewModel : ViewModelBase<Info>
     {
         private int _slipwaysCount;
         private int _watersCount;
@@ -32,8 +37,9 @@ namespace Slipways.Mobile.ViewModels
 
         public InfoPageViewModel(
             IDataStore dataStore,
+            IEventAggregator eventAggregator,
             INavigationService navigationService)
-            :base(navigationService)
+            :base("info", eventAggregator, navigationService)
         {
             Title = "Info";
             _dataStore = dataStore;
@@ -47,9 +53,9 @@ namespace Slipways.Mobile.ViewModels
         public override void OnNavigatedTo(
             INavigationParameters parameters)
         {
-            SlipwaysCount = _dataStore.Slipways.Count();
-            WatersCount = _dataStore.Waters.Count();
-            MarinasCount = _dataStore.Marinas.Count();
+            //SlipwaysCount = _dataStore.Slipways.Count();
+            //WatersCount = _dataStore.Waters.Count();
+            //MarinasCount = _dataStore.Marinas.Count();
         }
     }
 }

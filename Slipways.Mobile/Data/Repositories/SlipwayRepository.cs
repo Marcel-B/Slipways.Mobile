@@ -2,6 +2,7 @@
 using Slipways.Mobile.Data.Models;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Slipways.Mobile.Data.Repositories
 {
@@ -12,14 +13,14 @@ namespace Slipways.Mobile.Data.Repositories
         {
         }
 
-        public override List<Slipway> GetAll()
+        public override async Task<List<Slipway>> GetAllAsync()
         {
             if (Cache != null && Cache.Count > 0)
                 return Cache;
 
-            var slipways = base.GetAll();
-            var waters = Context.Table<Water>().ToList();
-            var marinas = Context.Table<Marina>().ToList();
+            var slipways = await base.GetAllAsync();
+            var waters = await Context.Table<Water>().ToListAsync();
+            var marinas = await Context.Table<Marina>().ToListAsync();
             foreach (var slipway in slipways)
             {
                 var water = waters.First(_ => _.Pk == slipway.WaterPk);

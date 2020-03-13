@@ -1,16 +1,17 @@
 ﻿using SQLite;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Slipways.Mobile.Contracts
 {
     public interface IDataContext
     {
-        SQLiteConnection Context { get; }
-        TableQuery<T> Table<T>() where T : IEntity, new();
-        List<T> Query<T>(string query) where T : IEntity, new();
-        int Insert<T>(T entity) where T : IEntity, new();
-        int Update<T>(T entity) where T : IEntity, new();
-        int Delete<T>(T entity) where T : IEntity, new();
-        public void Initialize();
+        SQLiteAsyncConnection Context { get; }
+        AsyncTableQuery<T> Table<T>() where T : IEntity, new();
+        Task<List<T>> QueryAsync<T>(string query) where T : IEntity, new();
+        Task<int> InsertAsync<T>(T entity) where T : IEntity, new();
+        Task<int> UpdateAsync<T>(T entity) where T : IEntity, new();
+        Task<int> DeleteAsync<T>(T entity) where T : IEntity, new();
+        Task Initialize();
     }
 }

@@ -10,7 +10,7 @@ using Xamarin.Forms;
 
 namespace Slipways.Mobile.ViewModels
 {
-    public class MainPageViewModel : ViewModelBase
+    public class MainPageViewModel : ViewModelBase<string>
     {
         private bool _running;
         private IDataStore _dataStore;
@@ -26,10 +26,9 @@ namespace Slipways.Mobile.ViewModels
         public MainPageViewModel(
             IDataStore dataStore,
             IEventAggregator eventAggregator,
-            INavigationService navigationService) : base(navigationService)
+            INavigationService navigationService) : base("MainPage", eventAggregator, navigationService)
         {
             _dataStore = dataStore;
-            eventAggregator.GetEvent<UpdateReadyEvent>().Subscribe(AllReady);
             Navigate = new Command(async (sender) =>
             {
                 var pageName = sender switch
@@ -49,12 +48,6 @@ namespace Slipways.Mobile.ViewModels
             });
             Title = "slipways.de";
             Running = true;
-        }
-
-        public void AllReady(string payload)
-        {
-            if (payload == "rdy")
-                Running = false;
         }
 
         public override void OnNavigatedFrom(

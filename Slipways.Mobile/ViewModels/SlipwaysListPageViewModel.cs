@@ -10,25 +10,16 @@ using Xamarin.Forms;
 
 namespace Slipways.Mobile.ViewModels
 {
-    public class SlipwaysListPageViewModel : ViewModelBase
+    public class SlipwaysListPageViewModel : ViewModelBase<Slipway>
     {
-        private ObservableCollection<Slipway> _slipways;
         private IDataStore _dataStore;
         public ICommand ItemTappedCommand { get; set; }
-
-        public ObservableCollection<Slipway> Slipways
-        {
-            get => _slipways;
-            set => SetProperty(ref _slipways, value);
-        }
 
         public SlipwaysListPageViewModel(
             INavigationService navigationService,
             IEventAggregator eventAggregator,
-            IDataStore dataStore) : base(navigationService)
+            IDataStore dataStore) : base("slipway", eventAggregator, navigationService)
         {
-            eventAggregator.GetEvent<UpdateReadyEvent>().Subscribe(Update);
-            Slipways = new ObservableCollection<Slipway>();
             ItemTappedCommand = new Command(async (sender) =>
             {
                 if (sender is Slipway slipway)
@@ -48,22 +39,11 @@ namespace Slipways.Mobile.ViewModels
         {
         }
 
-        public void Update(
-            string payload)
-        {
-            if (payload == "slipway")
-            {
-                Slipways.Clear();
-                foreach (var slipway in _dataStore.Slipways.OrderBy(_ => _.Name))
-                    Slipways.Add(slipway);
-            }
-        }
-
         public override void OnNavigatedTo(
             INavigationParameters parameters)
         {
-            if (Slipways.Count == 0)
-                Update("slipway");
+            //if (Slipways.Count == 0)
+            //    Update("slipway");
         }
     }
 }
